@@ -6,8 +6,20 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
   const petStatus = useRef<HTMLSelectElement>(null)
   const newPetName = useRef<HTMLInputElement>(null)
 
-  const [newPet, setNewPet] = useState({
-    id: 0,
+  interface newPetInterface {
+    id: string
+    category: {
+      id: number
+      name: string
+    }
+    name: string | undefined
+    photoUrls: [string]
+    tags: [{id: string; name: string}]
+    status: string | undefined
+  }
+
+  const [newPet, setNewPet] = useState<newPetInterface>({
+    id: '',
     category: {
       id: 0,
       name: 'string',
@@ -16,7 +28,7 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
     photoUrls: ['string'],
     tags: [
       {
-        id: 0,
+        id: '',
         name: 'string',
       },
     ],
@@ -24,7 +36,7 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
   })
 
   const addNewPet = async () => {
-    setNewPet({...newPet, id: uuidv4(), name: petStatus.current.value, status: petStatus.current.value})
+    setNewPet({...newPet, id: uuidv4(), name: petStatus.current?.value, status: petStatus.current?.value})
 
     await fetch('https://petstore.swagger.io/v2/pet', {
       method: 'POST',
@@ -52,12 +64,12 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
         <Form>
           <Form.Group className='mb-3' controlId='petName'>
             <Form.Label>Pet Name</Form.Label>
-            <Form.Control type='text' placeholder='Pet name' ref={newPetName} />
+            <Form.Control type='text' placeholder='Pet name' ref={newPetName} required />
           </Form.Group>
 
           <Form.Group className='mb-3' controlId='kategoriaProduktu'>
             <Form.Label>Pet Status</Form.Label>
-            <Form.Select ref={petStatus}>
+            <Form.Select ref={petStatus} required>
               {props.petStatus.map(status => (
                 <option key={status}>{status}</option>
               ))}
