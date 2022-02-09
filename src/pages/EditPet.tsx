@@ -76,8 +76,12 @@ const EditPet = (props: {setPetStatus: (arg0: string[]) => void; petStatus: any[
     getStoreInventory()
   }, [])
 
-  const handleChange = (e: React.FormEvent) => {
+  const handleChangePetName = (e: React.FormEvent) => {
     setCurrentPet({...currentPet, name: (e.target as HTMLInputElement).value})
+  }
+
+  const handleChangePetStatus = (e: React.FormEvent) => {
+    setCurrentPet({...currentPet, status: (e.target as HTMLSelectElement).value})
   }
 
   const deletePet = async (e: React.FormEvent) => {
@@ -104,13 +108,13 @@ const EditPet = (props: {setPetStatus: (arg0: string[]) => void; petStatus: any[
               defaultValue={currentPet.name}
               type='text'
               placeholder='Pet name'
-              onChange={e => handleChange(e)}
+              onChange={e => handleChangePetName(e)}
             />
           </Form.Group>
 
           <Form.Group className='mb-3' controlId='kategoriaProduktu'>
             <Form.Label>Pet Status</Form.Label>
-            <Form.Select value={currentPet.status}>
+            <Form.Select value={currentPet.status} onChange={e => handleChangePetStatus(e)}>
               {props.petStatus.map(status => (
                 <option key={status}>{status}</option>
               ))}

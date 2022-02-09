@@ -47,7 +47,7 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: 'fd9ba9e1-0788-4e8f-ac46-a43df43e205e',
+          api_key: 'fd9ba9e1-0788-4e8f-ac46-a43df43e205e',
         },
       })
 
