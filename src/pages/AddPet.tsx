@@ -1,13 +1,12 @@
-import {Form, Button, Container, Row} from 'react-bootstrap'
+import {Form, Button, Container, Row, ToastContainer, Toast} from 'react-bootstrap'
 import {useState, useEffect, useRef} from 'react'
-import {v4 as uuidv4} from 'uuid'
 
 const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void}) => {
   const petStatus = useRef<HTMLSelectElement>(null)
-  const newPetName = useRef<HTMLInputElement>(null)
+  const [showToast, setShowToast] = useState(false)
 
   interface newPetInterface {
-    id: string
+    id: number
     category: {
       id: number
       name: string
@@ -19,12 +18,12 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
   }
 
   const [newPet, setNewPet] = useState<newPetInterface>({
-    id: '',
+    id: 0,
     category: {
       id: 0,
       name: 'string',
     },
-    name: 'doggie',
+    name: '',
     photoUrls: ['string'],
     tags: [
       {
@@ -32,21 +31,40 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
         name: 'string',
       },
     ],
-    status: 'available',
+    status: '',
   })
 
-  const addNewPet = async () => {
-    setNewPet({...newPet, id: uuidv4(), name: petStatus.current?.value, status: petStatus.current?.value})
-
-    await fetch('https://petstore.swagger.io/v2/pet', {
-      method: 'POST',
-      body: JSON.stringify(newPet),
-      headers: {
-        Authorization: 'fd9ba9e1-0788-4e8f-ac46-a43df43e205e',
-        organizationId: '219',
-      },
-    })
+  const handleNameChange = (e: React.FormEvent) => {
+    setNewPet({...newPet, name: (e.target as HTMLInputElement).value})
   }
+
+  const addNewPet = async (e: React.FormEvent) => {
+    if (newPet.name !== '' || newPet.status !== '') {
+      e.preventDefault()
+      await fetch('https://petstore.swagger.io/v2/pet', {
+        method: 'POST',
+        body: JSON.stringify(newPet),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: 'fd9ba9e1-0788-4e8f-ac46-a43df43e205e',
+        },
+      })
+
+      setShowToast(true)
+      setTimeout(() => {
+        setShowToast(false)
+      }, 5000)
+    }
+  }
+
+  useEffect(() => {
+    setNewPet({
+      ...newPet,
+      id: Math.floor(Math.random() * 100000000),
+      status: petStatus.current?.value,
+    })
+  }, [])
 
   useEffect(() => {
     const getStoreInventory = async () => {
@@ -64,7 +82,7 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
         <Form>
           <Form.Group className='mb-3' controlId='petName'>
             <Form.Label>Pet Name</Form.Label>
-            <Form.Control type='text' placeholder='Pet name' ref={newPetName} required />
+            <Form.Control type='text' placeholder='Pet name' onChange={e => handleNameChange(e)} required />
           </Form.Group>
 
           <Form.Group className='mb-3' controlId='kategoriaProduktu'>
@@ -75,11 +93,22 @@ const AddPet = (props: {petStatus: any[]; setPetStatus: (arg0: string[]) => void
               ))}
             </Form.Select>
           </Form.Group>
-          <Button variant='primary' type='submit' onClick={addNewPet}>
+          <Button variant='primary' type='submit' onClick={e => addNewPet(e)}>
             Add
           </Button>
         </Form>
       </Row>
+      {showToast && (
+        <ToastContainer className='p-3' position='bottom-end'>
+          <Toast>
+            <Toast.Header closeButton={false}>
+              <img src='holder.js/20x20?text=%20' className='rounded me-2' alt='' />
+              <strong className='me-auto'>Success</strong>
+            </Toast.Header>
+            <Toast.Body>Pet has been added</Toast.Body>
+          </Toast>
+        </ToastContainer>
+      )}
     </Container>
   )
 }

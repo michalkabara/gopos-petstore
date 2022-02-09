@@ -36,27 +36,21 @@ const PetsList = (props: {pets: any; isLoading: any; petStatus: any[]; getPetsDa
               <tbody>
                 {props.pets.length === 0
                   ? 'No results'
-                  : props.pets.map(
-                      (pet: {
-                        id: Key | null | undefined
-                        name: boolean | ReactChild | ReactFragment | ReactPortal | null | undefined
-                        status: boolean | ReactChild | ReactFragment | ReactPortal | null | undefined
-                      }) => (
-                        <tr key={pet.id}>
-                          <td>
-                            <p>{pet.name}</p>
-                          </td>
-                          <td>
-                            <Badge bg='success'>{pet.status}</Badge>
-                          </td>
-                          <td>
-                            <Link to={`/pets/${pet.id}`}>
-                              <Button variant='secondary'>Edytuj</Button>
-                            </Link>
-                          </td>
-                        </tr>
-                      )
-                    )}
+                  : props.pets.map((pet: {id: number; name: string; status: string}) => (
+                      <tr key={pet.id}>
+                        <td>
+                          <p>{pet.name}</p>
+                        </td>
+                        <td>
+                          <Badge bg='success'>{pet.status}</Badge>
+                        </td>
+                        <td>
+                          <Link to={`/pets/${pet.id}`}>
+                            <Button variant='secondary'>Edytuj</Button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </Table>
           </Card>

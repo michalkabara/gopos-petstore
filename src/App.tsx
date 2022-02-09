@@ -11,7 +11,7 @@ function App() {
   const [petStatus, setPetStatus] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const getPetsData = async (status = 'available') => {
+  const getPetsData = async (status = '1') => {
     setIsLoading(true)
     setPets([])
     const response = await fetch(`https://petstore.swagger.io/v2/pet/findByStatus?status=${status}`)
